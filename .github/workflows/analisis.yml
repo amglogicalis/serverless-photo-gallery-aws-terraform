@@ -23,23 +23,36 @@ jobs:
           echo "Commit actual:"
           git rev-parse HEAD
 
-      - name: Contar archivos
+      - name: Contar archivos reales del repo
         run: |
           echo "Numero total de archivos:"
-          find . -type f | wc -l
+          git ls-files | wc -l
 
       - name: Contar extensiones
         run: |
           echo "Conteo por extensiones:"
-          find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
-      
-      - name: Resumen
+
+          git ls-files \
+            | awk -F. 'NF>1 {print $NF} NF==1 {print "sin_extension"}' \
+            | sort \
+            | uniq -c \
+            | sort -nr \
+            | awk '{printf "%s: %s | ", toupper($2), $1} END {print ""}'
+
+      - name: Resumen en summary
         run: |
-           echo "##Analisis del repositorio" >> $GITHUB_STEP_SUMMARY
-           echo "" >> $GITHUB_STEP_SUMMARY
-           echo "🔹 Commit actual: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
-           echo "🔹 Numero de archivos: $(find . -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
-           echo "" >> $GITHUB_STEP_SUMMARY
-           echo "🔹 Extensiones:" >> $GITHUB_STEP_SUMMARY
-           find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr >> $GITHUB_STEP_SUMMARY
-      
+          echo "## Analisis del repositorio" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "Commit actual: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
+          echo "Numero de archivos: $(git ls-files | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "Extensiones:" >> $GITHUB_STEP_SUMMARY
+
+          git ls-files \
+            | awk -F. 'NF>1 {print $NF} NF==1 {print "sin_extension"}' \
+            | sort \
+            | uniq -c \
+            | sort -nr \
+            | awk '{printf "%s: %s | ", toupper($2), $1} END {print ""}' >> $GITHUB_STEP_SUMMARY
