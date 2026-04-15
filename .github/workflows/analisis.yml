@@ -1,0 +1,34 @@
+name: Analisis de repositorio
+
+on:
+  workflow_dispatch:
+    inputs:
+      rama:
+        description: 'Rama a analizar'
+        required: true
+        default: 'main'
+
+jobs:
+  analizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rama }}
+
+      - name: Mostrar version actual
+        run: |
+          echo "Commit actual:"
+          git rev-parse HEAD
+
+      - name: Contar archivos
+        run: |
+          echo "Numero total de archivos:"
+          find . -type f | wc -l
+
+      - name: Contar extensiones
+        run: |
+          echo "Conteo por extensiones:"
+          find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
