@@ -32,3 +32,14 @@ jobs:
         run: |
           echo "Conteo por extensiones:"
           find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
+      
+      - name: Resumen
+        run: |
+           echo "##Analisis del repositorio" >> $GITHUB_STEP_SUMMARY
+           echo "" >> $GITHUB_STEP_SUMMARY
+           echo "🔹 Commit actual: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
+           echo "🔹 Numero de archivos: $(find . -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
+           echo "" >> $GITHUB_STEP_SUMMARY
+           echo "🔹 Extensiones:" >> $GITHUB_STEP_SUMMARY
+           find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr >> $GITHUB_STEP_SUMMARY
+      
