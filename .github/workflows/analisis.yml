@@ -33,12 +33,14 @@ jobs:
           echo "Conteo por extensiones:"
 
           git ls-files \
-            | grep '\.' \
-            | sed 's/.*\.//' \
-            | sort \
-            | uniq -c \
-            | awk '{print toupper($2)": "$1}' \
-            | paste -sd " | " -
+           | grep '\.' \
+           | grep -v '^\.' \
+           | sed 's/.*\.//' \
+           | sort \
+           | uniq -c \
+           | awk '{printf "%s: %s\n", toupper($2), $1}' \
+           | tr '\n' ' ' \
+           | sed 's/ $//' \
 
       - name: Resumen en summary
         run: |
@@ -53,8 +55,11 @@ jobs:
 
           git ls-files \
             | grep '\.' \
+            | grep -v '^\.' \
             | sed 's/.*\.//' \
             | sort \
             | uniq -c \
-            | awk '{print toupper($2)": "$1}' \
-            | paste -sd " | " - >> $GITHUB_STEP_SUMMARY
+            | awk '{printf "%s: %s\n", toupper($2), $1}' \
+            | tr '\n' ' ' \
+            | sed 's/ $//' \
+            >> $GITHUB_STEP_SUMMARY
