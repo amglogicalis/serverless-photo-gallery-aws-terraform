@@ -3,6 +3,7 @@
 *.tfstate
 *.tfstate.backup
 crash.log
+*.ps1
 
 # Lambda build artifact
 lambda.zip
