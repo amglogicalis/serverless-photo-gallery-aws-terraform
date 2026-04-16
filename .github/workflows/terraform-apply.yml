@@ -1,0 +1,35 @@
+name: Terraform Apply y Auto-Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      rama:
+        description: 'Rama donde se ejecutara terraform'
+        required: true
+        default: 'main'
+
+# Permisos necesarios para que el GITHUB_TOKEN pueda hacer git push
+permissions:
+  contents: write
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rama }}
+
+      # Si tu infraestructura está en AWS, deberás descomentar y configurar esto:
+      # - name: Configurar credenciales AWS
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: tu-region # e.g. us-east-1
+
+      - name: Ejecutar Action Externa de Terraform
+        # Reemplaza 'terraform-apply-action' con el nombre de tu otro repositorio.
+        uses: amglogicalis/terraform-apply-action@main
