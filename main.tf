@@ -7,7 +7,7 @@ module "lambda" {
   source = "./modules/lambda"
 
   name                = "demo"
-  lambda_zip          = "lambda.zip"
+  lambda_zip          = "${path.module}/modules/lambda/lambda.zip"
   dynamodb_table_name = module.dynamodb.table_name
   role_arn = "arn:aws:iam::339712980459:role/LabRole"
   bucket_name = module.s3.bucket_name

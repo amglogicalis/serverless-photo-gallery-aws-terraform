@@ -8,6 +8,11 @@ resource "aws_dynamodb_table" "this" {
     type = "S"
   }
 
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
   tags = {
     Project = var.name
     Module  = "dynamodb"

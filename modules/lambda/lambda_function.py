@@ -3,6 +3,7 @@ import os
 import boto3
 import uuid
 import base64
+import time
 
 dynamodb = boto3.resource("dynamodb")
 s3 = boto3.client("s3")
@@ -46,6 +47,9 @@ def lambda_handler(event, context):
 
     if path == "/photos" and method == "GET":
         return get_photos()
+
+    if path == "/delete-photo" and method == "POST":
+        return delete_photo(event)
 
     return response(404, {"error": "not found"})
 
@@ -378,13 +382,30 @@ async function loadPhotos(){
         <div class="card">
             <img src="${p.url}">
             <p>${p.user}</p>
+
+            ${p.user === localStorage.getItem("user") ? `
+                <button onclick="deletePhoto('${p.id}', '${p.key}')">Delete</button>
+            ` : ""}
         </div>
         `;
     });
 }
 
-loadPhotos();
+    loadPhotos();
 
+    async function deletePhoto(id, key){
+        await fetch("/delete-photo", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                id: id,
+                key: key,
+                user: localStorage.getItem("user")
+        })
+    });
+
+    loadPhotos();
+}
 </script>
 
 </body>
@@ -422,6 +443,18 @@ def upload_photo(event):
 
         image_bytes = base64.b64decode(file_data)
 
+# ---------------- VALIDACIÓN REAL ----------------
+
+        def is_jpeg(data):
+            return data.startswith(b"\xff\xd8\xff")
+
+        def is_png(data):
+            return data.startswith(b"\x89PNG\r\n\x1a\n")
+
+        # SOLO JPG / JPEG / PNG
+        if not (is_jpeg(image_bytes) or is_png(image_bytes)):
+            return response(400, {"error": "only jpg, jpeg, png allowed"})
+
         key = f"{uuid.uuid4()}.{ext}"
 
         s3.put_object(
@@ -434,16 +467,19 @@ def upload_photo(event):
         url = s3.generate_presigned_url(
             ClientMethod="get_object",
             Params={"Bucket": BUCKET_NAME, "Key": key},
-            ExpiresIn=3600
+            ExpiresIn=604800
         )
 
+        now = int(time.time())
+        ttl = now + 604800
         table.put_item(
             Item={
                 "id": str(uuid.uuid4()),
                 "type": "photo",
                 "user": user,
+                "key": key,
                 "url": url,
-                "key": key
+                "ttl": ttl
             }
         )
 
@@ -462,16 +498,19 @@ def get_photos():
 
         photos = [x for x in items if x.get("type") == "photo"]
 
-        valid = []
+        result = []
 
         for p in photos:
-            try:
-                s3.head_object(Bucket=BUCKET_NAME, Key=p["key"])
-                valid.append(p)
-            except:
-                pass
+            print("DEBUG PHOTO:", p)  # <-- importante para ver qué hay en Dynamo
 
-        return response(200, valid)
+            result.append({
+                "id": p.get("id", ""),   # fallback seguro
+                "url": p.get("url", ""),
+                "key": p.get("key", ""),
+                "user": p.get("user", "")
+            })
+
+        return response(200, result)
 
     except Exception as e:
         print("GET PHOTOS ERROR:", str(e))
@@ -489,3 +528,40 @@ def response(status, body):
         },
         "body": json.dumps(body)
     }
+
+def delete_photo(event):
+    body = json.loads(event.get("body") or "{}")
+
+    photo_id = body.get("id")
+    key = body.get("key")
+    user = body.get("user")
+
+    print("DELETE REQUEST:", photo_id, user)
+
+    items = table.scan().get("Items", [])
+
+    for item in items:
+        if str(item.get("id")) == str(photo_id) and item.get("type") == "photo":
+
+            print("FOUND ITEM:", item)
+
+            # 🔐 seguridad
+            if item.get("user") != user:
+                return response(403, {"error": "not allowed"})
+
+            # 🧹 borrar S3
+            print("DELETING S3:", item["key"])
+            s3.delete_object(
+                Bucket=BUCKET_NAME,
+                Key=item["key"]
+            )
+
+            # 🧹 borrar DynamoDB
+            print("DELETING DDB:", photo_id)
+            table.delete_item(
+                Key={"id": photo_id}
+            )
+
+            return response(200, {"ok": True})
+
+    return response(404, {"error": "not found"})

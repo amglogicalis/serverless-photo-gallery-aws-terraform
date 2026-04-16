@@ -3,7 +3,7 @@ resource "aws_lambda_function" "this" {
   runtime       = "python3.12"
   handler       = "lambda_function.lambda_handler"
 
-  filename         = var.lambda_zip
+  filename = var.lambda_zip
   source_code_hash = filebase64sha256(var.lambda_zip)
 
   role = var.role_arn
