@@ -1,0 +1,54 @@
+name: "Analisis de repositorio"
+description: "Muestra informacion sobre el repositorio: version, numero de archivos y extensiones"
+runs:
+  using: "composite"
+  steps:
+    - name: Mostrar version actual
+      shell: bash
+      run: |
+        echo "Commit actual:"
+        git rev-parse HEAD
+
+    - name: Contar archivos reales del repo
+      shell: bash
+      run: |
+        echo "Numero total de archivos:"
+        git ls-files | wc -l
+
+    - name: Contar extensiones
+      shell: bash
+      run: |
+        echo "Conteo por extensiones:"
+
+        git ls-files \
+         | grep '\.' \
+         | grep -v '^\.' \
+         | sed 's/.*\.//' \
+         | sort \
+         | uniq -c \
+         | awk '{printf "%s: %s\n", toupper($2), $1}' \
+         | tr '\n' ' ' \
+         | sed 's/ $//' \
+
+    - name: Resumen en summary
+      shell: bash
+      run: |
+        echo "## Analisis del repositorio" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "Commit actual: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
+        echo "Numero de archivos: $(git ls-files | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "Extensiones:" >> $GITHUB_STEP_SUMMARY
+
+        git ls-files \
+          | grep '\.' \
+          | grep -v '^\.' \
+          | sed 's/.*\.//' \
+          | sort \
+          | uniq -c \
+          | awk '{printf "%s: %s\n", toupper($2), $1}' \
+          | tr '\n' ' ' \
+          | sed 's/ $//' \
+          >> $GITHUB_STEP_SUMMARY

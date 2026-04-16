@@ -18,48 +18,5 @@ jobs:
         with:
           ref: ${{ github.event.inputs.rama }}
 
-      - name: Mostrar version actual
-        run: |
-          echo "Commit actual:"
-          git rev-parse HEAD
-
-      - name: Contar archivos reales del repo
-        run: |
-          echo "Numero total de archivos:"
-          git ls-files | wc -l
-
-      - name: Contar extensiones
-        run: |
-          echo "Conteo por extensiones:"
-
-          git ls-files \
-           | grep '\.' \
-           | grep -v '^\.' \
-           | sed 's/.*\.//' \
-           | sort \
-           | uniq -c \
-           | awk '{printf "%s: %s\n", toupper($2), $1}' \
-           | tr '\n' ' ' \
-           | sed 's/ $//' \
-
-      - name: Resumen en summary
-        run: |
-          echo "## Analisis del repositorio" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "Commit actual: $(git rev-parse HEAD)" >> $GITHUB_STEP_SUMMARY
-          echo "Numero de archivos: $(git ls-files | wc -l)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "Extensiones:" >> $GITHUB_STEP_SUMMARY
-
-          git ls-files \
-            | grep '\.' \
-            | grep -v '^\.' \
-            | sed 's/.*\.//' \
-            | sort \
-            | uniq -c \
-            | awk '{printf "%s: %s\n", toupper($2), $1}' \
-            | tr '\n' ' ' \
-            | sed 's/ $//' \
-            >> $GITHUB_STEP_SUMMARY
+      - name: Ejecutar analisis independiente
+        uses: ./.github/actions/repo-analysis
