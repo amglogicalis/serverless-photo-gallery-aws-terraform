@@ -12,6 +12,9 @@ project_name = "demo"
 # Region de AWS donde se desplegara la infraestructura
 aws_region = "us-east-1"
 
+# Perfil de AWS a usar (el que configuraste con awsconfigure.ps1 o AWS CLI)
+aws_profile = "personal"
+
 # ARN del IAM Role que tendra la funcion Lambda.
 # Debe existir en TU cuenta de AWS con permisos sobre DynamoDB y S3.
 # Ejemplo:  arn:aws:iam::<TU_ACCOUNT_ID>:role/<NOMBRE_DEL_ROLE>
