@@ -1,17 +1,23 @@
-$originalPath = Get-Location
+$projectRoot = $PSScriptRoot
+$lambdaPath  = Join-Path $projectRoot "modules\lambda"
+$lambdaFile  = Join-Path $lambdaPath "lambda_function.py"
+$zipFile     = Join-Path $lambdaPath "lambda.zip"
 
 try {
-    Set-Location C:\terraform-testing\modules\lambda
-
-    if (Test-Path "lambda.zip") {
-        Remove-Item "lambda.zip" -Force
-        Write-Host "Old zip removed"
+    if (-not (Test-Path $lambdaFile)) {
+        throw "No existe: $lambdaFile"
     }
 
-    Compress-Archive -Path "lambda_function.py" -DestinationPath "lambda.zip"
+    Remove-Item $zipFile -Force -ErrorAction SilentlyContinue
 
-    Write-Host "New lambda.zip created successfully"
+    Compress-Archive `
+        -Path $lambdaFile `
+        -DestinationPath $zipFile `
+        -Force
+
+    Write-Host "ZIP generado correctamente:"
+    Write-Host $zipFile
 }
-finally {
-    Set-Location $originalPath
+catch {
+    Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
 }
