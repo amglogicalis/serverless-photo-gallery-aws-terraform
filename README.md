@@ -1,4 +1,4 @@
-# 📸 PROYECTO AWS + TERRAFORM
+# 📸 INSTRUCCIONES PROYECTO AWS + TERRAFORM
 # Página web serverless para registro de usuarios y mural público de fotos
 
 *ANTES DE NADA ESTE PROYECTO NO ES COMPATIBLE CON ENTORNOS SANDBOX DE AWS*
