@@ -446,6 +446,10 @@ Esa URL será la aplicación lista para usar.
 
 ---
 
+*En caso de querer borrar lo creado ejecuta en el cmd/powershell del proyecto "terraform destroy" o "terraform destroy -auto-approve"*
+
+---
+
 # 🔐 Crear un IAM Role con permisos de administrador
 
 *(Solo necesario si NO tienes un rol válido)*
