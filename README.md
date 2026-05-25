@@ -21,6 +21,144 @@ Terraform
 
 ---
 
+# 📥 Preparación inicial del entorno
+
+Antes de desplegar el proyecto debes instalar Git, crear una carpeta de trabajo y clonar el repositorio.
+
+---
+
+# 0️⃣ Instalar Git (necesario para clonar el repositorio)
+
+## Instalar Git automáticamente con Winget
+
+Abrir PowerShell/CMD como administrador y ejecutar:
+
+```powershell
+winget install Git.Git
+```
+
+Comprobar instalación:
+
+```powershell
+git --version
+```
+
+Debe mostrar algo parecido a:
+
+```text
+git version 2.xx.x.windows.x
+```
+
+---
+
+## Si Winget no funciona
+
+Descargar Git manualmente desde:
+
+```text
+https://git-scm.com/downloads
+```
+
+Instalar con configuración por defecto.
+
+---
+
+# 1️⃣ Crear una carpeta para el proyecto
+
+Abrir PowerShell o CMD y moverse al escritorio:
+
+```powershell
+cd $HOME\Desktop
+```
+
+Crear carpeta:
+
+```powershell
+mkdir mis-proyectos
+```
+
+Entrar:
+
+```powershell
+cd .\mis-proyectos\
+```
+
+Puedes usar cualquier ubicación.
+
+Ejemplo:
+
+```text
+C:\mis-proyectos\
+D:\desarrollo\
+```
+
+---
+
+# 2️⃣ Clonar el repositorio
+
+Dentro de la carpeta donde guardarás el proyecto:
+
+Ejecutar:
+
+```powershell
+git clone URL_DEL_REPOSITORIO
+```
+
+Ejemplo:
+
+```powershell
+git clone https://github.com/usuario/proyecto.git
+```
+
+Git descargará todos los archivos.
+
+---
+
+# 3️⃣ Entrar al proyecto
+
+Después del clonado:
+
+```powershell
+cd nombre-del-repositorio
+```
+
+Ejemplo:
+
+```powershell
+cd serverless-photo-gallery-aws-terraform
+```
+
+Comprobar archivos:
+
+```powershell
+dir
+```
+
+Deberías ver algo parecido:
+
+```text
+modules/
+scripts/
+terraform/
+README.md
+terraform.tfvars.example
+deploy.ps1
+```
+
+---
+
+# ✅ Entorno preparado
+
+A partir de aquí ya puedes continuar con:
+
+```powershell
+.\instalar-herramientas-necesarias.ps1
+```
+
+y seguir el resto del documento.
+
+---
+
 # ⚙️ Cómo ejecutar scripts
 
 ## En PowerShell (recomendado ejecutarlo como administrador para evitar errores)
