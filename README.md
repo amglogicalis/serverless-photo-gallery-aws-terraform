@@ -251,7 +251,7 @@ Perfil → Security Credentials
 
 ---
 
-### Learner Lab / Vocareum:
+### Learner Lab:
 
 Botón:
 
@@ -339,12 +339,12 @@ Terraform
 
 ---
 
-## Caso Learner Lab / Vocareum
+## Caso Learner Lab
 
-Normalmente existe:
+Normalmente existe en los learner labs:
 
 ```text
-voclabs
+LabRole
 ```
 
 Para encontrarlo:
@@ -353,27 +353,27 @@ Para encontrarlo:
 AWS
 → IAM
 → Roles
-→ buscar "voclabs"
+→ buscar "LabRole"
 ```
 
 Abrir:
 
 ```text
-voclabs
+LabRole
 ```
 
 Copiar:
 
 ```text
 ARN:
-arn:aws:iam::<ACCOUNT_ID>:role/voclabs
+arn:aws:iam::<ACCOUNT_ID>:role/LabRole
 ```
 
 Pegar en:
 
 ```hcl
 role_arn =
-"arn:aws:iam::<ACCOUNT_ID>:role/voclabs"
+"arn:aws:iam::<ACCOUNT_ID>:role/LabRole"
 ```
 
 ---
