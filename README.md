@@ -323,7 +323,7 @@ eu-west-1
 
 ---
 
-### role_arn (si no tienes ninguno en una cuenta recién creada, baja al final de los pasos para la guía de como crear el role)
+### role_arn (si no tienes ninguno o no estas seguro en una cuenta/no sabes donde esta el ARN, baja al final de los pasos para la guía de como crear el role)
 
 ARN del IAM Role con permisos sobre:
 
