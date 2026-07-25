@@ -1,17 +1,8 @@
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-crash.log
-terraform.tfvars
-
-# Lambda build artifact
-lambda.zip
-
-# IDEs
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
+{
+  "files": [
+    {
+      "path": "example.js",
+      "content": "---START_FILE: example.js---\nfunction example() {\n    return \"example\";\n}\nmodule.exports = { example };\n---END_FILE: example.js---"
+    }
+  ]
+}
