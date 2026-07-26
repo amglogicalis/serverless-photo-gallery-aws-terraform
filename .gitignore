@@ -1,17 +1,19 @@
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-crash.log
-terraform.tfvars
-
-# Lambda build artifact
-lambda.zip
-
-# IDEs
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
+{
+  "modified_files": [
+    {
+      "file_path": "serverless-photo-gallery-aws-terraform/deploy.ps1",
+      "changes": [
+        {
+          "line_number": 2,
+          "action": "insert",
+          "content": "#!/bin/bash\n"
+        },
+        {
+          "line_number": 3,
+          "action": "insert",
+          "content": "git clone URL_DEL_REPOSITORIO\n"
+        }
+      ]
+    }
+  ]
+}
