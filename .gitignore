@@ -1,17 +1,75 @@
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-crash.log
-terraform.tfvars
+# HEALTHCHECK.md
 
-# Lambda build artifact
-lambda.zip
+## Recursos Serverless Creados
 
-# IDEs
-.vscode/
-.idea/
+### Lambda Function
+- **Nombre**: `photo-gallery-lambda`
+- **Descripción**: Función Lambda que maneja las solicitudes de la API Gateway y realiza operaciones en S3 y DynamoDB.
+- **Ruta**: `/photos`
 
-# OS
-.DS_Store
-Thumbs.db
+### S3 Bucket
+- **Nombre**: `photo-gallery-bucket-{project_name}`
+- **Descripción**: Almacena las imágenes subidas por los usuarios.
+
+### API Gateway
+- **URL**: `{generated_api_url}/photos`
+- **Métodos**: GET, POST
+
+## Comandos de Depuración Recomendados
+
+1. **Verificar Logs de Lambda**:
+   ```bash
+   aws logs get-log-events --log-group-name /aws/lambda/photo-gallery-lambda
+   ```
+
+2. **Verificar Eventos en S3**:
+   ```bash
+   aws s3api list-objects --bucket photo-gallery-bucket-{project_name}
+   ```
+
+3. **Verificar Tabla DynamoDB**:
+   ```bash
+   aws dynamodb scan --table-name photo-gallery-table-{project_name}
+   ```
+
+4. **Probar la API Gateway**:
+   - Usar herramientas como Postman o curl para probar los endpoints.
+   - Ejemplo con curl:
+     ```bash
+     curl -X POST https://{generated_api_url}/photos -F "file=@path/to/image.jpg"
+     ```
+
+5. **Revalidar Configuración de IAM Role**:
+   - Asegúrate de que el rol `TerraformAdminRole` (o el rol configurado en `role_arn`) tenga los permisos necesarios.
+   - Verificar políticas y roles asignados al rol.
+
+6. **Verificar Estado de Terraform**:
+   ```bash
+   terraform state list
+   ```
+
+7. **Reproducir la Configuración**:
+   - Si hay problemas, reproducir la configuración desde el inicio para asegurar que no faltan pasos o errores.
+   - Ejecutar `terraform destroy` y luego `terraform apply`.
+
+8. **Verificar Variables de Entorno**:
+   - Asegúrate de que las variables de entorno en `terraform.tfvars` sean correctas, especialmente `role_arn`.
+   - Verificar que el perfil AWS configurado tenga los permisos necesarios.
+
+9. **Revisar Archivos ZIP Generados**:
+   - Verificar que el archivo `lambda.zip` generado por el script `deploy.ps1` no contenga errores.
+   - Descomprimir y verificar el contenido del archivo para asegurar que todos los archivos necesarios están presentes.
+
+10. **Probar la Aplicación Completa**:
+    - Asegúrate de que toda la aplicación funcione como se espera, desde la subida de imágenes hasta la visualización en la API Gateway.
+    - Probar diferentes escenarios y casos de uso para asegurar la robustez del sistema.
+
+## Notas Adicionales
+
+- **Monitoreo**: Considerar el uso de CloudWatch para monitorear los recursos y detectar problemas en tiempo real.
+- **Seguridad**: Asegúrate de que todas las configuraciones de seguridad sean correctas, especialmente en términos de permisos IAM y políticas S3.
+- **Documentación**: Mantén la documentación actualizada con todos los cambios realizados y los pasos para reproducir el despliegue.
+
+---
+
+*Este archivo es una guía rápida para verificar y depurar el estado del proyecto serverless.*
