@@ -1,17 +1,73 @@
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-crash.log
-terraform.tfvars
+const { example } = require('./utils');
+// No se necesita importar 'example' si no se usa en el código actual
+const isProduction = process.env.NODE_ENV === 'production';
+// No se necesita 'isProduction' si no se usa en el código actual
+api.get('/data', (err, res) => {
+    if (err) return res.status(500).send(err);
+    return res.json(res.body);
+});
+async function fetchData() {
+    try {
+        const response = await api.get('/data');
+        return response.data;
+    } catch (error) {
+        return error.message;
+    }
+}
 
-# Lambda build artifact
-lambda.zip
+fetchData().then(data => {
+    res.json(data);
+}).catch(error => {
+    res.status(500).send(error);
+});
+console.log('Fetching data...');
+const logger = require('./logger');
 
-# IDEs
-.vscode/
-.idea/
+logger.info('Fetching data...');
+const isProduction = process.env.NODE_ENV === 'production';
+const Environment = {
+    PRODUCTION: 'production',
+    DEVELOPMENT: 'development'
+};
 
-# OS
-.DS_Store
-Thumbs.db
+const environment = Environment.PRODUCTION;
+const utils = require('./utils');
+class Utils {
+    static instance;
+
+    constructor() {
+        if (Utils.instance) return Utils.instance;
+        this.exampleFunction = () => 'example';
+        Utils.instance = this;
+    }
+
+    exampleFunction() {
+        return this.exampleFunction;
+    }
+}
+
+const utils = new Utils();
+api.get('/data', (err, res) => {
+    if (err) return res.status(500).send(err);
+    return res.json(res.body);
+});
+async function fetchData() {
+    try {
+        const response = await api.get('/data');
+        return response.data;
+    } catch (error) {
+        return error.message;
+    }
+}
+
+fetchData().then(data => {
+    res.json(data);
+}).catch(error => {
+    res.status(500).send(error);
+});
+res.send('Hello World');
+const response = {
+    message: 'Hello World'
+};
+
+res.json(response);
